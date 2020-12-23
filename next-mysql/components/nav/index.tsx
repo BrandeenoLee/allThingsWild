@@ -11,21 +11,14 @@ export default function Nav({ title = 'Entries' }) {
       <ul>
       <li>
         <Link
-          href={{
-            pathname: '/about',
-            query: { name: 'test' },
-          }}
-        >
+          href= '/hours'>
           <a>Hours</a>
         </Link>
       </li>
       <li>
         <Link
-          href={{
-            pathname: '..../pages/hours.ts'
-          }}
-        >
-          <a></a>
+          href= '/shifts'>
+          <a>Shifts</a>
         </Link>
       </li>
     </ul>
