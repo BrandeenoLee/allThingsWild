@@ -2,7 +2,7 @@ import Skeleton from 'react-loading-skeleton'
 
 import Nav from '@/components/nav'
 import Container from '@/components/container'
-import Entries from '@/components/entries'
+// import Entries from '@/components/entries'
 
 import { useEntries } from '@/lib/swr-hooks'
 
@@ -31,7 +31,7 @@ export default function IndexPage() {
     <div>
       <Nav />
       <Container>
-        <Entries entries={entries} />
+        {/* <Entries entries={entries} /> */}
       </Container>
     </div>
   )
