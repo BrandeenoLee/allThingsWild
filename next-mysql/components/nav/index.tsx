@@ -1,29 +1,36 @@
 import Link from 'next/link'
 import Container from '@/components/container'
-import ButtonLink from '@/components/button-link'
 import styles from '../nav/navbar.module.scss'
 
 
-export default function Nav({ title = 'Entries' }) {
+
+export default function Nav({ activePage }) {
+  console.log("active Page", activePage);
   return (
     <Container className="py-4">
       <nav className={styles.nav}>
-      <ul>
-      <li>
+        <ul>
+      <li className={`${styles.navLink} ${activePage === 'hours' ? styles.activePage : ''}`}>
         <Link
           href= '/hours'>
           <a>Hours</a>
         </Link>
       </li>
-      <li>
+      <li className={`${styles.navLink} ${activePage === 'shifts' ? styles.activePage : ''}`}>
         <Link
           href= '/shifts'>
           <a>Shifts</a>
         </Link>
       </li>
-    </ul>
-          <ButtonLink href="/new">Add Volunteer</ButtonLink>
+      <li className={`${styles.navLink} ${activePage === 'addVolunteer' ? styles.activePage : ''}`}>
+        <Link
+          href='/addVolunteer'>
+            <a>Add Volunteer</a>
+          </Link>
+      </li>
+      </ul>
       </nav>
     </Container>
   )
 }
+
