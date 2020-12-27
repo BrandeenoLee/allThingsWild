@@ -12,7 +12,7 @@ export default function EditEntryPage() {
   if (data) {
     return (
       <>
-        <Nav title="View" />
+        <Nav activePage="View" />
         <Container>
           <h1 className="font-bold text-3xl my-2">{data.title}</h1>
           <p>{data.content}</p>
@@ -22,7 +22,7 @@ export default function EditEntryPage() {
   } else {
     return (
       <>
-        <Nav title="View" />
+        <Nav activePage="View" />
         <Container>
           <h1 className="font-bold text-3xl my-2">...</h1>
           <p>...</p>
