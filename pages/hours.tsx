@@ -21,6 +21,7 @@ export default function Hours() {
                 <p>Enter Email</p>
               <input
               type='text'
+              placeholder='Email'
                 />
               </form>
               <DatePicker 
