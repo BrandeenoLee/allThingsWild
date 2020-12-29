@@ -8,6 +8,7 @@
     "migrate": "node scripts/migrate-db.js"
   },
   "dependencies": {
+    "airtable": "^0.10.1",
     "bad-words": "^3.0.4",
     "clsx": "^1.1.1",
     "dotenv": "^8.2.0",
