@@ -3,6 +3,7 @@ import Nav from '@/components/nav'
 import Container from '@/components/container'
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
+import Button from '@/components/button/buttonClick';
 
 
 export default function Hours() {
@@ -18,11 +19,10 @@ export default function Hours() {
           <Container className="w-full lg:w-2/4">
 
               <form>
-                <p>Enter Email</p>
-              <input
-              type='text'
-              placeholder='Email'
-                />
+                   <label>
+                      Email:
+                       <input type="text" name="email" />
+                    </label>
               </form>
               <DatePicker 
                   selected={startDate} 
@@ -41,6 +41,8 @@ export default function Hours() {
                   minDate={startDate} 
                   isClearable
                   />
+                  <Button >Hours</Button>
+                  <Button>Shifts</Button>
           </Container>
       </>
   )

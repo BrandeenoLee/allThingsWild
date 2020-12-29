@@ -8,7 +8,6 @@ import { useEntries } from '@/lib/swr-hooks'
 
 export default function IndexPage() {
   const { entries, isLoading } = useEntries()
-console.log("IndexPage")
   // if (isLoading) {
   //   return (
   //     <div>
