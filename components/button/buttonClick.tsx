@@ -1,7 +1,7 @@
 import cn from 'clsx'
 
 function Button({
-  onClick = console.log,
+  onClick = console.log(),
   className = '',
   children = null,
   type = null,
@@ -10,7 +10,7 @@ function Button({
   return (
     <button
       type={type}
-      onClick={onClick}
+      // onClick={onClick}
       disabled={disabled}
       className={cn(
         'bg-black',

@@ -3,7 +3,7 @@ import Link from 'next/link'
 import { mutate } from 'swr'
 
 import ButtonLink from '@/components/button-link'
-import Button from '@/components/button'
+import Button from '@/components/button/buttonClick'
 
 function Entry({ id, title, content }) {
   const [deleting, setDeleting] = useState(false)
@@ -31,7 +31,7 @@ function Entry({ id, title, content }) {
           </ButtonLink>
           <Button
             disabled={deleting}
-            onClick={deleteEntry}
+            // onClick={deleteEntry}
             className="h-5 py-0 mx-1"
           >
             {deleting ? 'Deleting ...' : 'Delete'}
