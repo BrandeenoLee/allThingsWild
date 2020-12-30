@@ -5,7 +5,6 @@ import styles from '../nav/navbar.module.scss'
 
 
 export default function Nav({ activePage }) {
-  console.log("active Page", activePage);
   return (
     <Container className="py-4">
       <nav className={styles.nav}>
