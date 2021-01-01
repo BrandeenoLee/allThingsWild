@@ -3,6 +3,7 @@ import Nav from "@/components/nav";
 import { filterToToday } from "@/lib/airtableFormulas";
 import getData from "@/lib/getData";
 import React, { useState, useEffect } from "react";
+import 'bootstrap/dist/css/bootstrap.min.css';
 
 export default function IndexPage() {
   const [todaysShifts, setTodaysShifts] = useState([]);
