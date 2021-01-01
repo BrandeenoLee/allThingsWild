@@ -16,18 +16,20 @@ export default function Hours() {
   
       const submitForm = () => {
         var email = (document.getElementById("email") as HTMLFormElement).value;
-        var radios = document.getElementsByName("HoursShifts");
+        var radios = document.getElementsByName("shiftHourRadio");
+        console.log("radios", radios)
         let checkedVal = ''
       
 
-        // for (var i = 0, length = radios.length; i < length; i++) {
-        //   var radio = radios[i] as HTMLFormElement;
+        for (var i = 0, length = radios.length; i < length; i++) {
+          var radio = radios[i] as HTMLFormElement;
 
-        //   if (radio.checked) {
-        //     checkedVal = radio.value;
-        //     break ;
-        //   }
-        // }
+          if (radio.checked) {
+            checkedVal = radio.id;
+            break ;
+          }
+        }
+        console.log("checkedVal", checkedVal);
       }
     return (
       <>
@@ -80,14 +82,14 @@ export default function Hours() {
                 <Form.Check
                   type="radio"
                   label="shifts"
-                  name="shiftsRadio"
-                  id="shiftsRadio"
+                  name="shiftHourRadio"
+                  id="shifts"
                 />
                 <Form.Check
                   type="radio"
                   label="hours"
-                  name="hoursRadio"
-                  id="hoursRadio"
+                  name="shiftHourRadio"
+                  id="hours"
                 />
               </Col>
             </Form.Group>

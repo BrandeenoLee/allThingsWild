@@ -1,4 +1,5 @@
 import Airtable from 'airtable';
+import { Volunteer } from './types';
 
 const base = new Airtable({
   apiKey: process.env.NEXT_PUBLIC_AIRTABLE_API_KEY,
@@ -27,4 +28,26 @@ const getVolunteers = async (options = {}) => {
 const getShifts = async (options = {}) => {
   const shifts = await shiftsTable.select(options).all();
   return getMinifiedData(shifts);
+}
+
+
+export const newVolunteer = (volunteer: Volunteer, callBack: (apiStatus: boolean) => void) => {
+  console.log('volunteer', volunteer);
+  // volunteer.nada = 123; // Test Error
+  base('Volunteers').create([
+    {
+      "fields": volunteer
+    }
+  ], function(err, records) {
+    if (err) {
+      console.error(err);
+      callBack(false);
+      return;
+    }
+    // success
+    callBack(true);
+    records.forEach(function (record) {
+      console.log(record.getId());
+    });
+  });
 }
