@@ -24,7 +24,6 @@ export default function Shifts() {
 
   const submitForm = (e) => {
     e.preventDefault();
-    // var email = (document.getElementById("email") as HTMLFormElement).value;
     getData("shifts", {
       filterByFormula: filterToDateRangeEmail(startDate, endDate, email),
       fields: ["email", "date", "shift"],
@@ -40,7 +39,6 @@ export default function Shifts() {
     setStartDate(null);
     setEndDate(null);
     setEmail("");
-    // (document.getElementById("email") as HTMLFormElement).value = "";
     setHasSearched(false);
   };
 

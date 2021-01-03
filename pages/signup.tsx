@@ -3,7 +3,7 @@ import Container from "@/components/container";
 import ShiftSignUpForm from "@/components/shiftSignUpForm";
 import React from "react";
 
-// TODO: Maybe we can just add a button that opens a modal to add volunteer and get rid of that page
+// TODO: Maybe we can just add a button here that opens a modal to add volunteer and get rid of that page
 export default function SignUpPage() {
   return (
     <>
