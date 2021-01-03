@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import Nav from "@/components/nav";
+import React, { useEffect, useState } from "react";
+import BrandedNav from "@/components/brandedNav";
 import Container from "@/components/container";
 import DatePicker from "react-datepicker";
 import Button from "react-bootstrap/Button";
@@ -7,119 +7,140 @@ import Form from "react-bootstrap/Form";
 import "react-datepicker/dist/react-datepicker.css";
 import Col from "react-bootstrap/Col";
 import Row from "react-bootstrap/Row";
+import "bootstrap/dist/css/bootstrap.min.css";
 import getData from "@/lib/getData";
-import { tryGetPreviewData } from "next/dist/next-server/server/api-utils";
-import { filterToDateRange, filterToDateRangeEmail, filterToToday } from "@/lib/airtableFormulas";
+import { filterToDateRangeEmail } from "@/lib/airtableFormulas";
 import Table from "react-bootstrap/Table";
+import { Alert } from "react-bootstrap";
 
 export default function Hours() {
   const [startDate, setStartDate] = useState(new Date());
+  const [hasSearched, setHasSearched] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const [endDate, setEndDate] = useState(new Date());
   const [filteredShifts, setFilteredShifts] = useState([]);
 
   const submitForm = (e) => {
     e.preventDefault();
+    setIsLoading(true);
     var email = (document.getElementById("email") as HTMLFormElement).value;
-    var radios = document.getElementsByName("shiftHourRadio");
-    console.log("radios", radios);
-    let checkedVal = "";
-
-    for (var i = 0, length = radios.length; i < length; i++) {
-      var radio = radios[i] as HTMLFormElement;
-
-      if (radio.checked) {
-        checkedVal = radio.id;
-        break;
-      }
-    }
-
-    // checkedVal send input to API and return filtered.
     getData("shifts", {
       filterByFormula: filterToDateRangeEmail(startDate, endDate, email),
-      fields: ["email", "date", "shift"],
+      fields: ["email", "date", "checkedin", "checkedout"],
     }).then((shifts) => {
-      console.log("shifts", shifts);
-      setFilteredShifts(shifts);
+      setFilteredShifts(shifts.filter((s) => s.checkedin && s.checkedout));
+      console.log("filteredShifts", filteredShifts);
+      setHasSearched(true);
+      setIsLoading(false);
     });
   };
+
+  const clearResults = () => {
+    // TODO: Also clear form fields
+    setFilteredShifts([]);
+    setHasSearched(false);
+  };
+
   return (
     <>
-      <Nav activePage="hours" />
-      <Container className="w-full lg:w-2/4">
-        <Form onSubmit={submitForm}>
-          <Form.Group as={Row} controlId="email">
-            <Form.Label column sm={2}>
-              Email:
-            </Form.Label>
-            <Col sm={10}>
-              <Form.Control type="email" placeholder="Email" />
-            </Col>
-          </Form.Group>
-          <fieldset>
-            <Form.Group as={Row}>
-              <Form.Label as="legend" column sm={2}>
-                Search for Shifts or Hours
+      <BrandedNav activePage="hours" />
+      <Container>
+        <h2>Hours</h2>
+        <p>
+          Fill out the form to see the hours that you have volunteered in the
+          specified date range.
+        </p>
+        <div className="form-container">
+          <Form onSubmit={submitForm}>
+            <Form.Group as={Row} controlId="email">
+              <Form.Label column sm={2}>
+                Email:
               </Form.Label>
               <Col sm={10}>
-                <Form.Check
-                  type="radio"
-                  label="shifts"
-                  name="shiftHourRadio"
-                  id="shifts"
-                />
-                <Form.Check
-                  type="radio"
-                  label="hours"
-                  name="shiftHourRadio"
-                  id="hours"
+                <Form.Control type="email" placeholder="Email" />
+              </Col>
+            </Form.Group>
+            <Form.Group as={Row} controlId="startDate">
+              <Form.Label column sm={2}>
+                From Date:
+              </Form.Label>
+              <Col sm={10}>
+                <DatePicker
+                  selected={startDate}
+                  onChange={(date) => setStartDate(date)}
+                  selectsStart
+                  startDate={startDate}
+                  endDate={endDate}
+                  isClearable
                 />
               </Col>
             </Form.Group>
-          </fieldset>
+            <Form.Group as={Row} controlId="endDate">
+              <Form.Label column sm={2}>
+                To Date:
+              </Form.Label>
+              <Col sm={10}>
+                <DatePicker
+                  selected={endDate}
+                  onChange={(date) => setEndDate(date)}
+                  selectsEnd
+                  startDate={startDate}
+                  endDate={endDate}
+                  minDate={startDate}
+                  isClearable
+                />
+              </Col>
+            </Form.Group>
 
-          <DatePicker
-            selected={startDate}
-            onChange={(date) => setStartDate(date)}
-            selectsStart
-            startDate={startDate}
-            endDate={endDate}
-            isClearable
-          />
-          <DatePicker
-            selected={endDate}
-            onChange={(date) => setEndDate(date)}
-            selectsEnd
-            startDate={startDate}
-            endDate={endDate}
-            minDate={startDate}
-            isClearable
-          />
-
-          <Form.Group as={Row}>
-            <Col sm={{ span: 10, offset: 2 }}>
-              <Button variant="primary" type="submit">Submit</Button>
-            </Col>
-          </Form.Group>
-        </Form>
-
-        <Table striped bordered hover>
-          <thead>
-            <tr>
-              <th>Email</th>
-              <th>Date</th>
-              <th>Shift</th>
-            </tr>
-          </thead>
-          <tbody>
-            {filteredShifts.map(({ email, date, shift }, i) => (
-              <tr key={i}>
-                <td>{email}</td>
-                <td>{date}</td>
-                <td>{shift}</td>
+            <Form.Group as={Row}>
+              <Col>
+                <Button
+                  variant="secondary"
+                  className="mr-2"
+                  onClick={clearResults}
+                >
+                  Clear
+                </Button>
+                <Button variant="primary" type="submit">
+                  See Hours
+                </Button>
+              </Col>
+            </Form.Group>
+          </Form>
+        </div>
+        {isLoading && <p>Loading hours...</p>}
+        {!isLoading && hasSearched && filteredShifts.length === 0 && (
+          <Alert variant={"info"}>
+            You did not check in for any shifts within this date range.
+          </Alert>
+        )}
+        {!isLoading && filteredShifts.length > 0 && (
+          <Table striped bordered>
+            <thead>
+              <tr>
+                <th>Email</th>
+                <th>Date</th>
+                <th>Clocked In</th>
+                <th>Clocked Out</th>
+                <th>Total Hrs</th>
               </tr>
-            ))}
-          </tbody>
-        </Table>
+            </thead>
+            <tbody>
+              {filteredShifts.map(
+                ({ email, date, checkedin, checkedout, hrsCompleted }, i) => (
+                  <tr key={i}>
+                    <td>{email}</td>
+                    <td>{date}</td>
+                    {/* TODO: Format Times & calc hours */}
+                    <td>{checkedin}</td>
+                    <td>{checkedout}</td>
+                    <td>TODO - calculate</td>
+                  </tr>
+                )
+              )}
+            </tbody>
+          </Table>
+        )}
       </Container>
     </>
   );

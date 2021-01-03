@@ -2,6 +2,17 @@ export const filterToToday = () => "{date}=TODAY()";
 
 export const filterByEmail = (email: string) => `{email}="${email}"`;
 
+export const filterByEmails = (emails: string[]) => {
+    let commaDelimitedEmails = '';
+    emails.forEach((e, i) => {
+        commaDelimitedEmails += `{email}="${e}"`;
+        if (i < emails.length - 1) {
+            commaDelimitedEmails += ", ";
+        }
+    });
+    return `OR(${commaDelimitedEmails})`
+};
+
 export const filterToDate = (date: Date) => {
     const formatted = date.toISOString().split('T')[0];
     return `DATESTR({date})="${formatted}"`
