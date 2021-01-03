@@ -14,7 +14,7 @@ import Table from "react-bootstrap/Table";
 import { Alert } from "react-bootstrap";
 
 export default function Hours() {
-  const [startDate, setStartDate] = useState(new Date());
+  const [startDate, setStartDate] = useState<Date | null>(new Date());
   const [hasSearched, setHasSearched] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [endDate, setEndDate] = useState(new Date());
@@ -39,6 +39,7 @@ export default function Hours() {
     // TODO: Also clear form fields
     setFilteredShifts([]);
     setHasSearched(false);
+    (document.getElementById("email") as HTMLFormElement).value = "";
   };
 
   return (

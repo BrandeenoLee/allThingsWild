@@ -17,22 +17,19 @@ export default async function getData(table: 'volunteers' | 'shifts', options = 
         return getVolunteers(options);
     }
     return getShifts(options);
-}
+};
 
 const getVolunteers = async (options = {}) => {
   const volunteers = await volunteersTable.select(options).all();
   return getMinifiedData(volunteers)
-}
+};
 
 const getShifts = async (options = {}) => {
   const shifts = await shiftsTable.select(options).all();
   return getMinifiedData(shifts);
-}
-
+};
 
 export const newVolunteer = (volunteer: Volunteer, callBack: (apiStatus: boolean) => void) => {
-  console.log('volunteer', volunteer);
-  // volunteer.nada = 123; // Test Error
   base('Volunteers').create([
     {
       "fields": volunteer
@@ -49,5 +46,22 @@ export const newVolunteer = (volunteer: Volunteer, callBack: (apiStatus: boolean
       console.log(record.getId());
     });
   });
-}
+};
+
+export const addShift = (fields: {email: string; date: string; shift: 1 | 2 | 3 | 4}) => {
+  base('Shifts').create([
+    {
+      "fields": fields
+    }
+  ], function(err, records) {
+    if (err) {
+      console.error(err);
+      return;
+    }
+    // success
+    records.forEach(function (record) {
+      console.log(record.getId());
+    });
+  });
+};
 
