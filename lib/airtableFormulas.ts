@@ -10,6 +10,14 @@ export const filterToDate = (date: Date) => {
 export const filterToDateRange = (start: Date, end: Date) => {
     return `AND(
         IS_AFTER({date}, DATEADD("${start}", -1, "days")),
-        IS_BEFORE({date}, DATEADD("${end}", -1, "days"))
+        IS_BEFORE({date}, DATEADD("${end}", -1, "days")),
+    )`
+};
+
+export const filterToDateRangeEmail = (start: Date, end: Date, email: string) => {
+    return `AND(
+        IS_AFTER({date}, DATEADD("${start}", -1, "days")),
+        IS_BEFORE({date}, DATEADD("${end}", -1, "days")),
+        {email}="${email}"
     )`
 };
