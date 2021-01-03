@@ -14,15 +14,17 @@ import getData from "@/lib/getData";
 import Table from "react-bootstrap/Table";
 import { getShiftText } from "@/lib/utils";
 import Alert from "react-bootstrap/Alert";
+import { Shift } from "@/lib/types";
 
 // TODO: Make look and act like the hours table, except show all shifts and don't show checkin/out
 // use getShiftText() in utils.ts
 export default function Shifts() {
-  const [startDate, setStartDate] = useState(new Date());
-  const [endDate, setEndDate] = useState(new Date());
-  const [filteredShifts, setFilteredShifts] = useState([]);
+  const [startDate, setStartDate] = useState<Date | null>(new Date());
+  const [endDate, setEndDate] = useState<Date | null>(new Date());
+  const [filteredShifts, setFilteredShifts] = useState<Shift[]>([]);
   const [hasSearched, setHasSearched] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  // const [validated, setValidated] = useState(false);
 
   const submitForm = (e) => {
     e.preventDefault();
@@ -30,17 +32,20 @@ export default function Shifts() {
     getData("shifts", {
       filterByFormula: filterToDateRangeEmail(startDate, endDate, email),
       fields: ["email", "date", "shift"],
-    }).then((shifts) => {
+    }).then((shifts: Shift[]) => {
       setFilteredShifts(shifts)
+      console.log("filteredShifts", filteredShifts);
       setHasSearched(true);
       setIsLoading(false);
-      console.log("filteredShifts", filteredShifts);
     })
     };
 
     const clearResults = () => {
-      // TODO: Also clear form fields
+      
       setFilteredShifts([]);
+      setStartDate(null);
+      setEndDate(null);
+      (document.getElementById("email") as HTMLFormElement).value = '';
       setHasSearched(false);
     };
   
@@ -48,13 +53,18 @@ export default function Shifts() {
     <>
       <BrandedNav activePage="shifts" />
       <Container>
+        <h2>Shifts</h2>
+        <p>
+        Fill out the form to see shifts with the specified date range.
+        </p>
+        <div className="form-container">
         <Form onSubmit={submitForm}>
           <Form.Group as={Row} controlId="email">
             <Form.Label column sm={2}>
               Email:
             </Form.Label>
             <Col sm={10}>
-              <Form.Control type="email" placeholder="Email" />
+              <Form.Control required type="email" placeholder="Email"/>
             </Col>
           </Form.Group>
 
@@ -64,6 +74,7 @@ export default function Shifts() {
               </Form.Label>
               <Col sm={10}>
                 <DatePicker
+                  required
                   selected={startDate}
                   onChange={(date) => setStartDate(date)}
                   selectsStart
@@ -79,6 +90,7 @@ export default function Shifts() {
               </Form.Label>
               <Col sm={10}>
                 <DatePicker
+                  required
                   selected={endDate}
                   onChange={(date) => setEndDate(date)}
                   selectsEnd
@@ -103,6 +115,7 @@ export default function Shifts() {
             </Col>
           </Form.Group>
         </Form>
+        </div>
         {isLoading && <p>Loading hours...</p>}
         {!isLoading && hasSearched && filteredShifts.length === 0 && (
           <Alert variant={"info"}>
