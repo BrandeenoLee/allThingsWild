@@ -1,4 +1,4 @@
-import { addShift } from "@/lib/getData";
+import { addShifts } from "@/lib/getData";
 import { getShiftID, getShiftText } from "@/lib/utils";
 import React, { useState } from "react";
 import { Button, Col, Form, Row } from "react-bootstrap";
@@ -23,7 +23,7 @@ export default function ShiftSignUpForm() {
   });
   const submitForm = (e) => {
     e.preventDefault();
-    useSpecificDateForm ? signUpSingleShift() : signUpRecurringShift();
+    useSpecificDateForm ? signUpSingleShift() : signUpRecurringShifts();
   };
 
   const signUpSingleShift = () => {
@@ -33,11 +33,11 @@ export default function ShiftSignUpForm() {
       date: new Date(date).toLocaleDateString(),
     };
     // TODO: add callback to show alert on success
-    addShift(shiftInfo);
+    addShifts([shiftInfo]);
   };
 
-  const signUpRecurringShift = () => {
-    // todo: build array of shiftInfo objects, and call addShift on each
+  const signUpRecurringShifts = () => {
+    // todo: build array of shiftInfo objects based on days and selectedShifts, and call addShifts with array
     // alert success after all complete
   };
 

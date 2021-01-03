@@ -1,5 +1,5 @@
 import Airtable from 'airtable';
-import { Volunteer } from './types';
+import { Shift, Volunteer } from './types';
 
 const base = new Airtable({
   apiKey: process.env.NEXT_PUBLIC_AIRTABLE_API_KEY,
@@ -48,12 +48,13 @@ export const newVolunteer = (volunteer: Volunteer, callBack: (apiStatus: boolean
   });
 };
 
-export const addShift = (fields: {email: string; date: string; shift: 1 | 2 | 3 | 4}) => {
-  base('Shifts').create([
-    {
-      "fields": fields
+export const addShifts = (values: Shift[]) => {
+  const createArr = values.map(shift => {
+    return {
+      "fields": shift
     }
-  ], function(err, records) {
+  })
+  base('Shifts').create(createArr, function(err, records) {
     if (err) {
       console.error(err);
       return;
@@ -64,4 +65,3 @@ export const addShift = (fields: {email: string; date: string; shift: 1 | 2 | 3 
     });
   });
 };
-
