@@ -9,6 +9,8 @@ import Col from "react-bootstrap/Col";
 import Row from "react-bootstrap/Row";
 import "bootstrap/dist/css/bootstrap.min.css";
 
+// TODO: Make look and act like the hours table, except show all shifts and don't show checkin/out
+// use getShiftText() in utils.ts
 export default function Shifts() {
   const [startDate, setStartDate] = useState(new Date());
   const [endDate, setEndDate] = useState(new Date());

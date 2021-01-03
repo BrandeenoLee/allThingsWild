@@ -5,7 +5,7 @@ import { Navbar, Nav } from "react-bootstrap";
 export default function BrandedNav({ activePage }) {
   return (
     <Navbar bg="dark" variant="dark" fixed="top">
-      <Navbar.Brand href="#home">
+      <Navbar.Brand href="/">
         <img
           src={"/ATW_Logo-white.svg"}
           width="200"

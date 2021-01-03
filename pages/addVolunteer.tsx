@@ -9,6 +9,10 @@ import Col from "react-bootstrap/Col";
 import { Volunteer } from "@/lib/types";
 import { newVolunteer } from "@/lib/getData";
 
+// TODO: Add validation rules
+// check for valid email
+// make email and name required
+
 export default function AddVolunteer() {
   const [showAlert, setShowAlert] = useState(false);
   const [showError, setShowError] = useState(false);
@@ -52,53 +56,56 @@ export default function AddVolunteer() {
     <>
       <BrandedNav activePage="addVolunteer" />
       <Container>
-        <Form onSubmit={submitForm}>
-          <Form.Row>
-            <Col>
-              <Form.Group controlId="firstName">
-                <Form.Label>First Name:</Form.Label>
-                <Form.Control type="text" placeholder="firstName" />
-              </Form.Group>
-            </Col>
-            <Col>
-              <Form.Group controlId="lastName">
-                <Form.Label>Last Name:</Form.Label>
-                <Form.Control type="text" placeholder="lastName" />
-              </Form.Group>
-            </Col>
-          </Form.Row>
-          <Form.Row>
-            <Col>
-              <Form.Group controlId="email">
-                <Form.Label>Email:</Form.Label>
-                <Form.Control type="email" placeholder="Enter email" />
-              </Form.Group>
-            </Col>
-            <Col>
-              <Form.Group controlId="phone">
-                <Form.Label>Phone Number</Form.Label>
-                <Form.Control type="text" placeholder="Enter Phone Number" />
-              </Form.Group>
-            </Col>
-          </Form.Row>
-          <Form.Row>
-            <Col>
-              <Form.Group controlId="emerContact">
-                <Form.Label>Emergency Contact:</Form.Label>
-                <Form.Control type="text" placeholder="Contact Name" />
-              </Form.Group>
-            </Col>
-            <Col>
-              <Form.Group controlId="emerPhone">
-                <Form.Label>Emergency Contact Phone Number:</Form.Label>
-                <Form.Control type="number" placeholder="Phone Number" />
-              </Form.Group>
-            </Col>
-          </Form.Row>
-          <Button variant="primary" type="submit">
-            Submit
-          </Button>{" "}
-        </Form>
+        <h2>Add New Volunteer</h2>
+        <div className="form-container">
+          <Form onSubmit={submitForm}>
+            <Form.Row>
+              <Col>
+                <Form.Group controlId="firstName">
+                  <Form.Label>First Name:</Form.Label>
+                  <Form.Control type="text" placeholder="firstName" />
+                </Form.Group>
+              </Col>
+              <Col>
+                <Form.Group controlId="lastName">
+                  <Form.Label>Last Name:</Form.Label>
+                  <Form.Control type="text" placeholder="lastName" />
+                </Form.Group>
+              </Col>
+            </Form.Row>
+            <Form.Row>
+              <Col>
+                <Form.Group controlId="email">
+                  <Form.Label>Email:</Form.Label>
+                  <Form.Control type="email" placeholder="Enter email" />
+                </Form.Group>
+              </Col>
+              <Col>
+                <Form.Group controlId="phone">
+                  <Form.Label>Phone Number</Form.Label>
+                  <Form.Control type="text" placeholder="Enter Phone Number" />
+                </Form.Group>
+              </Col>
+            </Form.Row>
+            <Form.Row>
+              <Col>
+                <Form.Group controlId="emerContact">
+                  <Form.Label>Emergency Contact:</Form.Label>
+                  <Form.Control type="text" placeholder="Contact Name" />
+                </Form.Group>
+              </Col>
+              <Col>
+                <Form.Group controlId="emerPhone">
+                  <Form.Label>Emergency Contact Phone Number:</Form.Label>
+                  <Form.Control type="number" placeholder="Phone Number" />
+                </Form.Group>
+              </Col>
+            </Form.Row>
+            <Button variant="primary" type="submit">
+              Submit
+            </Button>{" "}
+          </Form>
+        </div>
         <Alert variant={"success"} show={showAlert}>
           Volunteer Added!
         </Alert>

@@ -2,3 +2,20 @@ body {
   background-image: url("/animal-pattern-30.png");
   background-size: 350px;
 }
+
+h2 {
+  color: #3dae2b;
+  font-size: 36px;
+}
+
+.react-datepicker-wrapper input {
+  border: 1px solid rgb(206, 212, 218);
+  border-radius: 4px;
+  padding: 6px;
+}
+
+.form-container {
+  padding: 25px;
+  background-color: #f7f8fa;
+  margin-bottom: 1.5rem;
+}
