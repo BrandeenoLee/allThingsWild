@@ -31,8 +31,6 @@ const getShifts = async (options = {}) => {
 
 
 export const newVolunteer = (volunteer: Volunteer, callBack: (apiStatus: boolean) => void) => {
-  console.log('volunteer', volunteer);
-  // volunteer.nada = 123; // Test Error
   base('Volunteers').create([
     {
       "fields": volunteer
