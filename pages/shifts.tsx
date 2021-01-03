@@ -9,7 +9,7 @@ import Col from "react-bootstrap/Col";
 import Row from "react-bootstrap/Row";
 import "bootstrap/dist/css/bootstrap.min.css";
 
-export default function Hours() {
+export default function Shifts() {
   const [startDate, setStartDate] = useState(new Date());
   const [endDate, setEndDate] = useState(new Date());
 
@@ -42,27 +42,6 @@ export default function Hours() {
               <Form.Control type="email" placeholder="Email" />
             </Col>
           </Form.Group>
-          <fieldset>
-            <Form.Group as={Row}>
-              <Form.Label as="legend" column sm={2}>
-                Search for Shifts or Hours
-              </Form.Label>
-              <Col sm={10}>
-                <Form.Check
-                  type="radio"
-                  label="shifts"
-                  name="shiftHourRadio"
-                  id="shifts"
-                />
-                <Form.Check
-                  type="radio"
-                  label="hours"
-                  name="shiftHourRadio"
-                  id="hours"
-                />
-              </Col>
-            </Form.Group>
-          </fieldset>
 
           <DatePicker
             selected={startDate}
@@ -84,7 +63,7 @@ export default function Hours() {
 
           <Form.Group as={Row}>
             <Col sm={{ span: 10, offset: 2 }}>
-              <Button type="submit">Submit</Button>
+              <Button type="submit">See Shifts</Button>
             </Col>
           </Form.Group>
         </Form>

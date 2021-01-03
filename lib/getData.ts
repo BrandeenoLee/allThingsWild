@@ -14,8 +14,7 @@ const getMinifiedData = data => {
 
 export default async function getData(table: 'volunteers' | 'shifts', options = {}) {
     if (table === 'volunteers') {
-        const volunteers =  await getVolunteers(options);
-        return volunteers;
+        return getVolunteers(options);
     }
     return getShifts(options);
 }
