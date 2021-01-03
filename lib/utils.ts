@@ -41,14 +41,19 @@ export const getShiftID = (shift: number | string): 1 | 2 | 3 | 4 => {
   return id;
 };
 
+export const todayPlusDays = (daysToAdd = 30) => {
+  var date = new Date();
+  date.setDate(date.getDate() + daysToAdd);
+  return date;
+};
 
-  export const getVolunteerNameMap = async (emails: string[]) => {
-    const filterByFormula =
-    emails.length > 1 ? filterByEmails(emails) : filterByEmail(emails[0]);
-    const volunteers = await getData("volunteers", { filterByFormula, fields: ["email", "name"] });
-    const map = {};
-    volunteers.forEach((volunteer) => {
-        map[volunteer.email] = volunteer.name;
-    });
-    return map;
-  }
+export const getVolunteerNameMap = async (emails: string[]) => {
+  const filterByFormula =
+  emails.length > 1 ? filterByEmails(emails) : filterByEmail(emails[0]);
+  const volunteers = await getData("volunteers", { filterByFormula, fields: ["email", "name"] });
+  const map = {};
+  volunteers.forEach((volunteer) => {
+      map[volunteer.email] = volunteer.name;
+  });
+  return map;
+}

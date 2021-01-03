@@ -3,7 +3,6 @@ import Container from "@/components/container";
 import Button from "react-bootstrap/Button";
 import React, { useState } from "react";
 import Form from "react-bootstrap/Form";
-import "bootstrap/dist/css/bootstrap.min.css";
 import Alert from "react-bootstrap/Alert";
 import Col from "react-bootstrap/Col";
 import { Volunteer } from "@/lib/types";

@@ -1,13 +1,8 @@
 import Container from "@/components/container";
 import BrandedNav from "@/components/brandedNav";
-import {
-  filterByEmail,
-  filterByEmails,
-  filterToToday,
-} from "@/lib/airtableFormulas";
+import { filterToToday } from "@/lib/airtableFormulas";
 import getData from "@/lib/getData";
 import React, { useState, useEffect } from "react";
-import "bootstrap/dist/css/bootstrap.min.css";
 import Alert from "react-bootstrap/Alert";
 import Button from "react-bootstrap/Button";
 import { Table } from "react-bootstrap";
@@ -25,6 +20,7 @@ export default function IndexPage() {
     getData("shifts", {
       filterByFormula: filterToToday(),
       fields: ["email", "shift", "checkedin", "checkedout"],
+      sort: [{ field: "shift", direction: "asc" }],
     })
       .then((shifts) => {
         setTodaysShifts(shifts);
@@ -58,17 +54,19 @@ export default function IndexPage() {
               </tr>
             </thead>
             <tbody>
-              {todaysShifts.map(({ email, shift, checkedin, checkedout }) => (
-                <tr key={email}>
-                  <td>{emailToNameMap && emailToNameMap[email]}</td>
-                  <td>{getShiftText(shift)}</td>
-                  <td>
-                    <Button variant="primary">
-                      {checkedin && !checkedout ? "Clock Out" : "Clock In"}
-                    </Button>{" "}
-                  </td>
-                </tr>
-              ))}
+              {todaysShifts.map(
+                ({ email, shift, checkedin, checkedout }, i) => (
+                  <tr key={i}>
+                    <td>{emailToNameMap && emailToNameMap[email]}</td>
+                    <td>{getShiftText(shift)}</td>
+                    <td>
+                      <Button variant="primary">
+                        {checkedin && !checkedout ? "Clock Out" : "Clock In"}
+                      </Button>{" "}
+                    </td>
+                  </tr>
+                )
+              )}
             </tbody>
           </Table>
         )}

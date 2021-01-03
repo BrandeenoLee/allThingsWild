@@ -4,42 +4,40 @@ import Container from "@/components/container";
 import DatePicker from "react-datepicker";
 import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
-import "react-datepicker/dist/react-datepicker.css";
 import Col from "react-bootstrap/Col";
 import Row from "react-bootstrap/Row";
-import "bootstrap/dist/css/bootstrap.min.css";
 import getData from "@/lib/getData";
 import { filterToDateRangeEmail } from "@/lib/airtableFormulas";
 import Table from "react-bootstrap/Table";
 import { Alert } from "react-bootstrap";
+import { todayPlusDays } from "@/lib/utils";
 
 export default function Hours() {
-  const [startDate, setStartDate] = useState<Date | null>(new Date());
+  const [email, setEmail] = useState("");
+  const [startDate, setStartDate] = useState<Date | null>(todayPlusDays(-30));
+  const [endDate, setEndDate] = useState(new Date());
   const [hasSearched, setHasSearched] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const [endDate, setEndDate] = useState(new Date());
   const [filteredShifts, setFilteredShifts] = useState([]);
 
   const submitForm = (e) => {
     e.preventDefault();
     setIsLoading(true);
-    var email = (document.getElementById("email") as HTMLFormElement).value;
     getData("shifts", {
       filterByFormula: filterToDateRangeEmail(startDate, endDate, email),
       fields: ["email", "date", "checkedin", "checkedout"],
+      sort: [{ field: "date", direction: "asc" }],
     }).then((shifts) => {
       setFilteredShifts(shifts.filter((s) => s.checkedin && s.checkedout));
-      console.log("filteredShifts", filteredShifts);
       setHasSearched(true);
       setIsLoading(false);
     });
   };
 
   const clearResults = () => {
-    // TODO: Also clear form fields
     setFilteredShifts([]);
     setHasSearched(false);
-    (document.getElementById("email") as HTMLFormElement).value = "";
+    setEmail("");
   };
 
   return (
@@ -58,7 +56,11 @@ export default function Hours() {
                 Email:
               </Form.Label>
               <Col sm={10}>
-                <Form.Control type="email" placeholder="Email" />
+                <Form.Control
+                  type="email"
+                  placeholder="Email"
+                  onChange={(e) => setEmail(e.target.value)}
+                />
               </Col>
             </Form.Group>
             <Form.Group as={Row} controlId="startDate">
@@ -102,7 +104,11 @@ export default function Hours() {
                 >
                   Clear
                 </Button>
-                <Button variant="primary" type="submit">
+                <Button
+                  variant="primary"
+                  type="submit"
+                  disabled={!!(!email || !startDate || !endDate)}
+                >
                   See Hours
                 </Button>
               </Col>

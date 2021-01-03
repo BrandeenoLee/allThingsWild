@@ -32,11 +32,13 @@ export default function ShiftSignUpForm() {
       shift: selectedShift,
       date: new Date(date).toLocaleDateString(),
     };
+    // TODO: add callback to show alert on success
     addShift(shiftInfo);
   };
 
   const signUpRecurringShift = () => {
-    // todo
+    // todo: build array of shiftInfo objects, and call addShift on each
+    // alert success after all complete
   };
 
   return (
@@ -186,7 +188,13 @@ export default function ShiftSignUpForm() {
             <Button variant="secondary" className="mr-2" onClick={() => {}}>
               Clear
             </Button>
-            <Button variant="primary" type="submit">
+            <Button
+              variant="primary"
+              type="submit"
+              disabled={
+                !email || !(date || (startDate && endDate)) || !selectedShift
+              }
+            >
               Submit
             </Button>
           </Col>

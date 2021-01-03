@@ -24,13 +24,13 @@ export default function BrandedNav({ activePage }) {
           href="/signup"
           className={`${activePage === "signup" ? styles.activePage : ""}`}
         >
-          Sign Up for Shifts
+          Sign Up
         </Nav.Link>
         <Nav.Link
           href="/shifts"
           className={`${activePage === "shifts" ? styles.activePage : ""}`}
         >
-          Shifts
+          Upcoming Shifts
         </Nav.Link>
         <Nav.Link
           href="/hours"
