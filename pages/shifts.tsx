@@ -8,23 +8,19 @@ import "react-datepicker/dist/react-datepicker.css";
 import Col from "react-bootstrap/Col";
 import Row from "react-bootstrap/Row";
 import "bootstrap/dist/css/bootstrap.min.css";
-import { tryGetPreviewData } from "next/dist/next-server/server/api-utils";
-import { filterToDateRange, filterToDateRangeEmail } from "@/lib/airtableFormulas";
+import { filterToDateRangeEmail } from "@/lib/airtableFormulas";
 import getData from "@/lib/getData";
 import Table from "react-bootstrap/Table";
 import { getShiftText } from "@/lib/utils";
 import Alert from "react-bootstrap/Alert";
 import { Shift } from "@/lib/types";
 
-// TODO: Make look and act like the hours table, except show all shifts and don't show checkin/out
-// use getShiftText() in utils.ts
 export default function Shifts() {
   const [startDate, setStartDate] = useState<Date | null>(new Date());
   const [endDate, setEndDate] = useState<Date | null>(new Date());
   const [filteredShifts, setFilteredShifts] = useState<Shift[]>([]);
   const [hasSearched, setHasSearched] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  // const [validated, setValidated] = useState(false);
 
   const submitForm = (e) => {
     e.preventDefault();
@@ -33,42 +29,39 @@ export default function Shifts() {
       filterByFormula: filterToDateRangeEmail(startDate, endDate, email),
       fields: ["email", "date", "shift"],
     }).then((shifts: Shift[]) => {
-      setFilteredShifts(shifts)
-      console.log("filteredShifts", filteredShifts);
+      setFilteredShifts(shifts);
+
       setHasSearched(true);
       setIsLoading(false);
-    })
-    };
+    });
+  };
 
-    const clearResults = () => {
-      
-      setFilteredShifts([]);
-      setStartDate(null);
-      setEndDate(null);
-      (document.getElementById("email") as HTMLFormElement).value = '';
-      setHasSearched(false);
-    };
-  
+  const clearResults = () => {
+    setFilteredShifts([]);
+    setStartDate(null);
+    setEndDate(null);
+    (document.getElementById("email") as HTMLFormElement).value = "";
+    setHasSearched(false);
+  };
+
   return (
     <>
       <BrandedNav activePage="shifts" />
       <Container>
         <h2>Shifts</h2>
-        <p>
-        Fill out the form to see shifts with the specified date range.
-        </p>
+        <p>Fill out the form to see shifts within the specified date range.</p>
         <div className="form-container">
-        <Form onSubmit={submitForm}>
-          <Form.Group as={Row} controlId="email">
-            <Form.Label column sm={2}>
-              Email:
-            </Form.Label>
-            <Col sm={10}>
-              <Form.Control required type="email" placeholder="Email"/>
-            </Col>
-          </Form.Group>
+          <Form onSubmit={submitForm}>
+            <Form.Group as={Row} controlId="email">
+              <Form.Label column sm={2}>
+                Email:
+              </Form.Label>
+              <Col sm={10}>
+                <Form.Control required type="email" placeholder="Email" />
+              </Col>
+            </Form.Group>
 
-          <Form.Group as={Row} controlId="startDate">
+            <Form.Group as={Row} controlId="startDate">
               <Form.Label column sm={2}>
                 From Date:
               </Form.Label>
@@ -82,7 +75,7 @@ export default function Shifts() {
                   endDate={endDate}
                   isClearable
                 />
-                </Col>
+              </Col>
             </Form.Group>
             <Form.Group as={Row} controlId="endDate">
               <Form.Label column sm={2}>
@@ -102,19 +95,19 @@ export default function Shifts() {
               </Col>
             </Form.Group>
 
-          <Form.Group as={Row}>
-            <Col sm={{ span: 10, offset: 2 }}>
-            <Button
+            <Form.Group as={Row}>
+              <Col sm={{ span: 10, offset: 2 }}>
+                <Button
                   variant="secondary"
                   className="mr-2"
                   onClick={clearResults}
                 >
                   Clear
                 </Button>
-              <Button type="submit">See Shifts</Button>
-            </Col>
-          </Form.Group>
-        </Form>
+                <Button type="submit">See Shifts</Button>
+              </Col>
+            </Form.Group>
+          </Form>
         </div>
         {isLoading && <p>Loading hours...</p>}
         {!isLoading && hasSearched && filteredShifts.length === 0 && (
@@ -124,25 +117,23 @@ export default function Shifts() {
         )}
         {!isLoading && filteredShifts.length > 0 && (
           <Table striped bordered>
-          <thead>
-            <tr>
-              <th>Email</th>
-              <th>Date</th>
-              <th>Shift</th>
-            </tr>
-          </thead>
-          <tbody>
-            {filteredShifts.map(
-              ({email, date, shift}, i) => (
+            <thead>
+              <tr>
+                <th>Email</th>
+                <th>Date</th>
+                <th>Shift</th>
+              </tr>
+            </thead>
+            <tbody>
+              {filteredShifts.map(({ email, date, shift }, i) => (
                 <tr key={i}>
                   <td>{email}</td>
                   <td>{date}</td>
                   <td>{getShiftText(shift)}</td>
                 </tr>
-              )
-            )}
-          </tbody>
-        </Table>
+              ))}
+            </tbody>
+          </Table>
         )}
       </Container>
     </>
