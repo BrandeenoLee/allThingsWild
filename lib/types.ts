@@ -5,3 +5,11 @@ export type Volunteer = {
     emergencyName?: string;
     emergencyPhone?: string;
 }
+
+export type Shift = {
+    email: string;
+    date: Date;
+    shift: number;
+    checkedin: Date;
+    checkedout: Date;
+}
