@@ -7,7 +7,7 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import Alert from "react-bootstrap/Alert";
 import Col from "react-bootstrap/Col";
 import { Volunteer } from "@/lib/types";
-import { newVolunteer } from "@/lib/getData";
+// import { newVolunteer } from "@/lib/getData";
 
 // TODO: Add validation rules
 // check for valid email
@@ -49,7 +49,7 @@ export default function AddVolunteer() {
       emergencyPhone: emerPhone,
     };
 
-    newVolunteer(volunteerInfo, alertStatus);
+    // newVolunteer(volunteerInfo, alertStatus);
   };
 
   return (
