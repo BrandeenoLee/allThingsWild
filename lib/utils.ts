@@ -1,7 +1,7 @@
 import { filterByEmails, filterByEmail } from "./airtableFormulas";
 import getData from "./getData";
 
-export const getShiftText = (shift: 1 | 2 | 3 | 4): string => {
+export const getShiftText = (shift: number): string => {
     let str = "";
     switch (shift) {
       case 1:
