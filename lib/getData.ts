@@ -19,7 +19,7 @@ export default async function getData(table: 'volunteers' | 'shifts', options = 
     return getShifts(options);
 };
 
-const getVolunteers = async (options = {}) => {
+export const getVolunteers = async (options = {}) => {
   const volunteers = await volunteersTable.select(options).all();
   return getMinifiedData(volunteers)
 };

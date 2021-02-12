@@ -1,5 +1,7 @@
+import toast from "react-hot-toast";
 import { filterByEmails, filterByEmail } from "./airtableFormulas";
-import getData from "./getData";
+import getData, { addShifts } from "./getData";
+import { Shift } from "./types";
 
 export const getShiftText = (shift: 1 | 2 | 3 | 4): string => {
   let str = "";
@@ -57,3 +59,25 @@ export const getVolunteerNameMap = async (emails: string[]) => {
   });
   return map;
 }
+
+export const addShiftsWithToast = (shifts: Shift[]) => {
+  const addShiftsPromise = addShifts(shifts);
+  toast.promise(
+    addShiftsPromise,
+    {
+      loading: "Saving...",
+      success: "Hooray, you're signed up!",
+      error: "Oh no, something went wrong..",
+    },
+    {
+      success: {
+        duration: 5000,
+        icon: "🦝",
+      },
+      error: {
+        duration: 5000,
+        icon: "🙈",
+      },
+    }
+  );
+};

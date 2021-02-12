@@ -1,18 +1,26 @@
 import Container from "@/components/container";
 import BrandedNav from "@/components/brandedNav";
 import { filterToToday } from "@/lib/airtableFormulas";
-import getData, { addShifts } from "@/lib/getData";
+import getData, { getVolunteers } from "@/lib/getData";
 import React, { useState, useEffect } from "react";
 import Alert from "react-bootstrap/Alert";
 import Button from "react-bootstrap/Button";
 import { Col, Form, Row, Table } from "react-bootstrap";
-import { getShiftText, getVolunteerNameMap } from "@/lib/utils";
+import {
+  addShiftsWithToast,
+  getShiftText,
+  getVolunteerNameMap,
+} from "@/lib/utils";
+import { debug } from "console";
+import { Shift } from "@/lib/types";
+import VolunteerSignUpModal from "@/components/volunteerSignUpModal";
 
 export default function IndexPage() {
   const [loading, setLoading] = useState(false);
-  const [todaysShifts, setTodaysShifts] = useState([]);
+  const [todaysShifts, setTodaysShifts] = useState<Shift[]>([]);
   const [emailToNameMap, setEmailToNameMap] = useState({});
   const [email, setEmail] = useState("");
+  const [showVolunteerSignUp, setShowVolunteerSignUp] = useState(false);
 
   const today = new Date().toLocaleDateString("en-us");
   // TODO: I think there might be a time zone bug, check dates/times that show up
@@ -34,23 +42,39 @@ export default function IndexPage() {
       .catch(() => setLoading(false));
   }, []);
 
-  const calculateShiftTime = () => {
+  const calculateShiftTime = (): 1 | 2 | 3 | 4 => {
     const now = new Date();
+    const nowTime = now.getTime();
+    if (nowTime < now.setHours(11)) {
+      return 1;
+    }
+    if (nowTime < now.setHours(14)) {
+      return 2;
+    }
+    if (nowTime < now.setHours(17)) {
+      return 3;
+    }
+    return 4;
   };
 
   const submitTodaySignupForm = (e) => {
     e.preventDefault();
-    const shiftInfo = {
-      email,
-      shift: calculateShiftTime(),
-      date: new Date(),
-    };
-    // TODO: add callback to show alert on success
-    addShifts([shiftInfo]);
-    // TODO: add loading spinner?
-    // TODO: check if volunteer is in system
-    // if no, show modal to add to system first
-    // if yes, sign up for shift and check them in
+    const volunteers = getVolunteers()
+      .then((volunteers) => {
+        return volunteers.map((v) => v.email).indexOf(email) > -1;
+      })
+      .then((isRegistered) => {
+        if (isRegistered) {
+          const shiftInfo = {
+            email,
+            shift: calculateShiftTime(),
+            date: new Date().toLocaleDateString("en-US"),
+          };
+          addShiftsWithToast([shiftInfo]);
+          return;
+        }
+        setShowVolunteerSignUp(true);
+      });
   };
 
   return (
@@ -117,6 +141,11 @@ export default function IndexPage() {
           </Form.Group>
         </Form>
       </Container>
+      <VolunteerSignUpModal
+        showModal={showVolunteerSignUp}
+        toggleShowModal={() => setShowVolunteerSignUp(!showVolunteerSignUp)}
+        alertText="We don't have you in our system yet, sign up first to sign up for shifts."
+      />
     </div>
   );
 }

@@ -1,13 +1,17 @@
 import { addShifts, newVolunteer } from "@/lib/getData";
 import React, { useState } from "react";
-import { Button, Col, Form, Modal, Row } from "react-bootstrap";
+import { Alert, Button, Col, Form, Modal, Row } from "react-bootstrap";
 import toast from "react-hot-toast";
 import { Shift, Volunteer } from "@/lib/types";
 
 // TODO: Add validation rules
 // check for valid email
 // make email and name required
-export default function VolunteerSignUpModal({ showModal, toggleShowModal }) {
+export default function VolunteerSignUpModal({
+  showModal,
+  toggleShowModal,
+  alertText = "",
+}) {
   const submitForm = (e) => {
     e.preventDefault();
     var email = (document.getElementById("email") as HTMLFormElement).value;
@@ -46,6 +50,7 @@ export default function VolunteerSignUpModal({ showModal, toggleShowModal }) {
         </Modal.Title>
       </Modal.Header>
       <Modal.Body>
+        {alertText && <Alert variant="info">{alertText}</Alert>}
         <div className="form-container">
           <Form onSubmit={submitForm}>
             <h3>Your Info</h3>
@@ -54,7 +59,7 @@ export default function VolunteerSignUpModal({ showModal, toggleShowModal }) {
                 Name:
               </Form.Label>
               <Col sm={9} lg={10}>
-                <Form.Control type="text" placeholder="Full name" />
+                <Form.Control type="text" placeholder="Full name" required />
               </Col>
             </Form.Group>
             <Form.Group as={Row} controlId="email">
@@ -62,7 +67,7 @@ export default function VolunteerSignUpModal({ showModal, toggleShowModal }) {
                 Email:
               </Form.Label>
               <Col sm={9} lg={10}>
-                <Form.Control type="email" placeholder="Email" />
+                <Form.Control type="email" placeholder="Email" required />
               </Col>
             </Form.Group>
             <Form.Group as={Row} controlId="phone">

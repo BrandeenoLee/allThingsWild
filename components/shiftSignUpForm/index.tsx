@@ -1,11 +1,9 @@
-import { addShifts } from "@/lib/getData";
-import { getShiftID, getShiftText } from "@/lib/utils";
+import { addShiftsWithToast, getShiftID, getShiftText } from "@/lib/utils";
 import React, { FormEvent, useState } from "react";
 import { Button, Col, Form, Row } from "react-bootstrap";
 import DatePicker from "react-datepicker";
 import styles from "../shiftSignUpForm/signupform.module.scss";
 import addDays from "date-fns/addDays";
-import toast from "react-hot-toast";
 import { Shift } from "@/lib/types";
 
 export default function ShiftSignUpForm() {
@@ -97,29 +95,30 @@ export default function ShiftSignUpForm() {
         currentDate = addDays(currentDate, 7);
       }
     });
+
     addShiftsWithToast(shiftsToAdd);
   };
 
-  const addShiftsWithToast = (shifts: Shift[]) => {
-    const addShiftsPromise = addShifts(shifts);
-    toast.promise(
-      addShiftsPromise,
-      {
-        loading: "Saving...",
-        success: "Hooray, you're signed up!",
-        error: "Oh no, something went wrong..",
-      },
-      {
-        success: {
-          duration: 4000,
-          icon: "🦝",
-        },
-        error: {
-          icon: "🙈",
-        },
-      }
-    );
-  };
+  // const addShiftsWithToast = (shifts: Shift[]) => {
+  //   const addShiftsPromise = addShifts(shifts);
+  //   toast.promise(
+  //     addShiftsPromise,
+  //     {
+  //       loading: "Saving...",
+  //       success: "Hooray, you're signed up!",
+  //       error: "Oh no, something went wrong..",
+  //     },
+  //     {
+  //       success: {
+  //         duration: 4000,
+  //         icon: "🦝",
+  //       },
+  //       error: {
+  //         icon: "🙈",
+  //       },
+  //     }
+  //   );
+  // };
 
   return (
     <div className="form-container">
