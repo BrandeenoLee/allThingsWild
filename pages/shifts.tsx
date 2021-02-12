@@ -25,15 +25,15 @@ export default function Shifts() {
   const submitForm = (e) => {
     e.preventDefault();
     var email = (document.getElementById("email") as HTMLFormElement).value;
-    // getData("shifts", {
-    //   filterByFormula: filterToDateRangeEmail(startDate, endDate, email),
-    //   fields: ["email", "date", "shift"],
-    // }).then((shifts: Shift[]) => {
-    //   setFilteredShifts(shifts);
+    getData("shifts", {
+      filterByFormula: filterToDateRangeEmail(startDate, endDate, email),
+      fields: ["email", "date", "shift"],
+    }).then((shifts: Shift[]) => {
+      setFilteredShifts(shifts);
 
-    //   setHasSearched(true);
-    //   setIsLoading(false);
-    // });
+      setHasSearched(true);
+      setIsLoading(false);
+    });
   };
 
   const clearResults = () => {
