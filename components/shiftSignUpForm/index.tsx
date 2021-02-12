@@ -1,6 +1,6 @@
 import { addShifts } from "@/lib/getData";
 import { getShiftID, getShiftText } from "@/lib/utils";
-import React, { useState } from "react";
+import React, { FormEvent, useState } from "react";
 import { Button, Col, Form, Row } from "react-bootstrap";
 import DatePicker from "react-datepicker";
 import styles from "../shiftSignUpForm/signupform.module.scss";
@@ -21,7 +21,14 @@ export default function ShiftSignUpForm() {
     saturday: false,
     sunday: false,
   });
-  const submitForm = (e) => {
+
+  const onDayCheck = (day: string) => {
+    const updatedDays = { ...days };
+    updatedDays[day] = !days[day];
+    setDays(updatedDays);
+  };
+
+  const submitForm = (e: FormEvent) => {
     e.preventDefault();
     useSpecificDateForm ? signUpSingleShift() : signUpRecurringShifts();
   };
@@ -126,7 +133,7 @@ export default function ShiftSignUpForm() {
                       id={day}
                       key={day}
                       checked={days[day]}
-                      onChange={(e) => console.log("e.target", e.target)}
+                      onChange={(e) => onDayCheck(day)}
                       label={day}
                     />
                   );

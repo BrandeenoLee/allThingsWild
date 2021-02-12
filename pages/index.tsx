@@ -1,20 +1,21 @@
 import Container from "@/components/container";
 import BrandedNav from "@/components/brandedNav";
 import { filterToToday } from "@/lib/airtableFormulas";
-import getData from "@/lib/getData";
+import getData, { addShifts } from "@/lib/getData";
 import React, { useState, useEffect } from "react";
 import Alert from "react-bootstrap/Alert";
 import Button from "react-bootstrap/Button";
-import { Table } from "react-bootstrap";
+import { Col, Form, Row, Table } from "react-bootstrap";
 import { getShiftText, getVolunteerNameMap } from "@/lib/utils";
 
 export default function IndexPage() {
   const [loading, setLoading] = useState(false);
   const [todaysShifts, setTodaysShifts] = useState([]);
   const [emailToNameMap, setEmailToNameMap] = useState({});
+  const [email, setEmail] = useState("");
 
-  const today = new Date().toLocaleDateString();
-
+  const today = new Date().toLocaleDateString("en-us");
+  // TODO: I think there might be a time zone bug, check dates/times that show up
   useEffect(() => {
     setLoading(true);
     getData("shifts", {
@@ -33,11 +34,30 @@ export default function IndexPage() {
       .catch(() => setLoading(false));
   }, []);
 
+  const calculateShiftTime = () => {
+    const now = new Date();
+  };
+
+  const submitTodaySignupForm = (e) => {
+    e.preventDefault();
+    const shiftInfo = {
+      email,
+      shift: calculateShiftTime(),
+      date: new Date(),
+    };
+    // TODO: add callback to show alert on success
+    addShifts([shiftInfo]);
+    // TODO: add loading spinner?
+    // TODO: check if volunteer is in system
+    // if no, show modal to add to system first
+    // if yes, sign up for shift and check them in
+  };
+
   return (
     <div>
       <BrandedNav activePage="home" />
       <Container>
-        <h2>
+        <h2 className="mb-3">
           Today's Volunteers <span>({today})</span>
         </h2>
         {loading && <p>Loading...</p>}
@@ -70,6 +90,32 @@ export default function IndexPage() {
             </tbody>
           </Table>
         )}
+        <hr />
+        <h3 className="mb-3">
+          Not signed up yet? Enter your email and we'll sign you up and check
+          you in.
+        </h3>
+        <Form onSubmit={submitTodaySignupForm}>
+          <Form.Group as={Row} controlId="email">
+            <Form.Label column sm={1}>
+              Email:
+            </Form.Label>
+            <Col sm={7}>
+              <Form.Control
+                type="email"
+                placeholder="Email"
+                required
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+              />
+            </Col>
+            <Col sm={4}>
+              <Button type="submit" disabled={!email}>
+                Sign Up/Check In
+              </Button>
+            </Col>
+          </Form.Group>
+        </Form>
       </Container>
     </div>
   );

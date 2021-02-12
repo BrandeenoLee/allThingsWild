@@ -5,7 +5,15 @@ body {
 
 h2 {
   color: #3dae2b;
-  font-size: 36px;
+  font-size: 36px !important;
+}
+
+h3 {
+  font-size: 18px !important;
+}
+
+hr {
+  margin: 2rem 0 !important;
 }
 
 .react-datepicker-wrapper input {
