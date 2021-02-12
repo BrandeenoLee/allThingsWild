@@ -29,23 +29,21 @@ const getShifts = async (options = {}) => {
   return getMinifiedData(shifts);
 };
 
-export const newVolunteer = (volunteer: Volunteer, callBack: (apiStatus: boolean) => void) => {
-  base('Volunteers').create([
-    {
-      "fields": volunteer
-    }
-  ], function(err, records) {
-    if (err) {
-      console.error(err);
-      callBack(false);
-      return;
-    }
-    // success
-    callBack(true);
-    records.forEach(function (record) {
-      console.log(record.getId());
+export const newVolunteer = (volunteer: Volunteer): Promise<void> => {
+  return new Promise((resolve, reject) => {
+    base('Volunteers').create([
+      {
+        "fields": volunteer
+      }
+    ], function(err, records) {
+      if (err) {
+        reject();
+        return;
+      }
+      resolve();
     });
   });
+  
 };
 
 export const addShifts = (values: Shift[]): Promise<void> => {

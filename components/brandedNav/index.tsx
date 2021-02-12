@@ -38,14 +38,6 @@ export default function BrandedNav({ activePage }) {
         >
           Hours
         </Nav.Link>
-        <Nav.Link
-          href="/addVolunteer"
-          className={`${
-            activePage === "addVolunteer" ? styles.activePage : ""
-          }`}
-        >
-          Add Volunteer
-        </Nav.Link>
       </Nav>
     </Navbar>
   );

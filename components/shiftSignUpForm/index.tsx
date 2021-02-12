@@ -5,7 +5,7 @@ import { Button, Col, Form, Row } from "react-bootstrap";
 import DatePicker from "react-datepicker";
 import styles from "../shiftSignUpForm/signupform.module.scss";
 import addDays from "date-fns/addDays";
-import toast, { Toaster } from "react-hot-toast";
+import toast from "react-hot-toast";
 import { Shift } from "@/lib/types";
 
 export default function ShiftSignUpForm() {
