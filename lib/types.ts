@@ -8,7 +8,7 @@ export type Volunteer = {
 
 export type Shift = {
     email: string;
-    date: Date;
+    date: string;
     shift: 1 | 2 | 3 | 4;
     checkedin?: Date;
     checkedout?: Date;

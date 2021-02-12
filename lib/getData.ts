@@ -48,7 +48,7 @@ export const newVolunteer = (volunteer: Volunteer, callBack: (apiStatus: boolean
   });
 };
 
-export const addShifts = (values: Shift[]) => {
+export const addShifts = (values: Shift[], onSuccess?: () => void, onError?: () => void) => {
   const createArr = values.map(shift => {
     return {
       "fields": shift
@@ -56,12 +56,15 @@ export const addShifts = (values: Shift[]) => {
   })
   base('Shifts').create(createArr, function(err, records) {
     if (err) {
+      onError();
       console.error(err);
       return;
     }
     // success
-    records.forEach(function (record) {
-      console.log(record.getId());
-    });
+    if (onSuccess) onSuccess();
+    // TODO: do we need ids of added shifts?
+    // records.forEach(function (record) {
+    //   console.log(record.getId());
+    // });
   });
 };

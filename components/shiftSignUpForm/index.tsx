@@ -4,6 +4,7 @@ import React, { FormEvent, useState } from "react";
 import { Button, Col, Form, Row } from "react-bootstrap";
 import DatePicker from "react-datepicker";
 import styles from "../shiftSignUpForm/signupform.module.scss";
+import addDays from "date-fns/addDays";
 
 export default function ShiftSignUpForm() {
   const [useSpecificDateForm, setUseSpecificDateForm] = useState(true);
@@ -13,13 +14,13 @@ export default function ShiftSignUpForm() {
   const [email, setEmail] = useState("");
   const [selectedShift, setSelectedShift] = useState<1 | 2 | 3 | 4>(1);
   const [days, setDays] = useState({
-    monday: false,
-    tuesday: false,
-    wednesday: false,
-    thursday: false,
-    friday: false,
-    saturday: false,
-    sunday: false,
+    Monday: false,
+    Tuesday: false,
+    Wednesday: false,
+    Thursday: false,
+    Friday: false,
+    Saturday: false,
+    Sunday: false,
   });
 
   const onDayCheck = (day: string) => {
@@ -37,16 +38,70 @@ export default function ShiftSignUpForm() {
     const shiftInfo = {
       email,
       shift: selectedShift,
-      date: new Date(date).toLocaleDateString(),
+      date: new Date(date).toLocaleDateString("en-US"),
     };
-    // TODO: add callback to show alert on success
-    addShifts([shiftInfo]);
+    // TODO: show Toast on success/error
+    addShifts([shiftInfo], showSuccessAlert, showErrorAlert);
+  };
+
+  const getNumericDay = (day: string) => {
+    let numericDay: number | null;
+    switch (day) {
+      case "Sunday":
+        numericDay = 0;
+        break;
+      case "Monday":
+        numericDay = 1;
+        break;
+      case "Tuesday":
+        numericDay = 2;
+        break;
+      case "Wednesday":
+        numericDay = 3;
+        break;
+      case "Thursday":
+        numericDay = 4;
+        break;
+      case "Friday":
+        numericDay = 5;
+        break;
+      case "Saturday":
+        numericDay = 6;
+        break;
+      default:
+        numericDay = null;
+    }
+    return numericDay;
   };
 
   const signUpRecurringShifts = () => {
-    // todo: build array of shiftInfo objects based on days and selectedShifts, and call addShifts with array
-    // alert success after all complete
+    const shiftsToAdd = [];
+    const shiftDays = Object.keys(days)
+      .filter((day) => days[day])
+      .map((d) => getNumericDay(d));
+    shiftDays.forEach((day) => {
+      let currentDate = startDate;
+      // find first date with the correct day
+      while (currentDate.getDay() !== day) {
+        currentDate = addDays(currentDate, 1);
+      }
+      // add all shifts for that day within date range
+      while (currentDate <= endDate) {
+        shiftsToAdd.push({
+          email,
+          shift: selectedShift,
+          date: currentDate.toLocaleDateString("en-US"),
+        });
+        currentDate = addDays(currentDate, 7);
+      }
+    });
+
+    addShifts(shiftsToAdd, showSuccessAlert, showErrorAlert);
   };
+
+  const showSuccessAlert = () => alert("success!");
+
+  const showErrorAlert = () => alert("error :(");
 
   return (
     <div className="form-container">
