@@ -99,27 +99,6 @@ export default function ShiftSignUpForm() {
     addShiftsWithToast(shiftsToAdd);
   };
 
-  // const addShiftsWithToast = (shifts: Shift[]) => {
-  //   const addShiftsPromise = addShifts(shifts);
-  //   toast.promise(
-  //     addShiftsPromise,
-  //     {
-  //       loading: "Saving...",
-  //       success: "Hooray, you're signed up!",
-  //       error: "Oh no, something went wrong..",
-  //     },
-  //     {
-  //       success: {
-  //         duration: 4000,
-  //         icon: "🦝",
-  //       },
-  //       error: {
-  //         icon: "🙈",
-  //       },
-  //     }
-  //   );
-  // };
-
   return (
     <div className="form-container">
       <Form onSubmit={submitForm}>
