@@ -4,33 +4,31 @@ import Container from "@/components/container";
 import DatePicker from "react-datepicker";
 import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
-import "react-datepicker/dist/react-datepicker.css";
 import Col from "react-bootstrap/Col";
 import Row from "react-bootstrap/Row";
-import "bootstrap/dist/css/bootstrap.min.css";
 import { filterToDateRangeEmail } from "@/lib/airtableFormulas";
 import getData from "@/lib/getData";
 import Table from "react-bootstrap/Table";
-import { getShiftText } from "@/lib/utils";
+import { getShiftText, todayPlusDays } from "@/lib/utils";
 import Alert from "react-bootstrap/Alert";
 import { Shift } from "@/lib/types";
+import { start } from "repl";
 
 export default function Shifts() {
+  const [email, setEmail] = useState("");
   const [startDate, setStartDate] = useState<Date | null>(new Date());
-  const [endDate, setEndDate] = useState<Date | null>(new Date());
+  const [endDate, setEndDate] = useState<Date | null>(todayPlusDays(30));
   const [filteredShifts, setFilteredShifts] = useState<Shift[]>([]);
   const [hasSearched, setHasSearched] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
   const submitForm = (e) => {
     e.preventDefault();
-    var email = (document.getElementById("email") as HTMLFormElement).value;
     getData("shifts", {
       filterByFormula: filterToDateRangeEmail(startDate, endDate, email),
       fields: ["email", "date", "shift"],
     }).then((shifts: Shift[]) => {
       setFilteredShifts(shifts);
-
       setHasSearched(true);
       setIsLoading(false);
     });
@@ -40,7 +38,7 @@ export default function Shifts() {
     setFilteredShifts([]);
     setStartDate(null);
     setEndDate(null);
-    (document.getElementById("email") as HTMLFormElement).value = "";
+    setEmail("");
     setHasSearched(false);
   };
 
@@ -57,7 +55,12 @@ export default function Shifts() {
                 Email:
               </Form.Label>
               <Col sm={10}>
-                <Form.Control required type="email" placeholder="Email" />
+                <Form.Control
+                  required
+                  type="email"
+                  placeholder="Email"
+                  onChange={(e) => setEmail(e.target.value)}
+                />
               </Col>
             </Form.Group>
 
@@ -104,7 +107,12 @@ export default function Shifts() {
                 >
                   Clear
                 </Button>
-                <Button type="submit">See Shifts</Button>
+                <Button
+                  type="submit"
+                  disabled={!!(!email || !startDate || !endDate)}
+                >
+                  See Shifts
+                </Button>
               </Col>
             </Form.Group>
           </Form>

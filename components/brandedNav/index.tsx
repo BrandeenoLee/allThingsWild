@@ -21,24 +21,22 @@ export default function BrandedNav({ activePage }) {
           Today's Volunteers
         </Nav.Link>
         <Nav.Link
+          href="/signup"
+          className={`${activePage === "signup" ? styles.activePage : ""}`}
+        >
+          Sign Up
+        </Nav.Link>
+        <Nav.Link
           href="/shifts"
           className={`${activePage === "shifts" ? styles.activePage : ""}`}
         >
-          Shifts
+          Upcoming Shifts
         </Nav.Link>
         <Nav.Link
           href="/hours"
           className={`${activePage === "hours" ? styles.activePage : ""}`}
         >
           Hours
-        </Nav.Link>
-        <Nav.Link
-          href="/addVolunteer"
-          className={`${
-            activePage === "addVolunteer" ? styles.activePage : ""
-          }`}
-        >
-          Add Volunteer
         </Nav.Link>
       </Nav>
     </Navbar>
