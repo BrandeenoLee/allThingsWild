@@ -11,6 +11,7 @@ import { filterToDateRangeEmail } from "@/lib/airtableFormulas";
 import Table from "react-bootstrap/Table";
 import { Alert } from "react-bootstrap";
 import { todayPlusDays } from "@/lib/utils";
+import { Shift } from "@/lib/types";
 
 export default function Hours() {
   const [email, setEmail] = useState("");
@@ -18,21 +19,59 @@ export default function Hours() {
   const [endDate, setEndDate] = useState(new Date());
   const [hasSearched, setHasSearched] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const [filteredShifts, setFilteredShifts] = useState([]);
+  const [filteredShifts, setFilteredShifts] = useState<Shift[]>([]);
+  const [totalHours, setTotalHours] = useState<string | null>(null);
 
   const submitForm = (e) => {
     e.preventDefault();
     setIsLoading(true);
     getData("shifts", {
       filterByFormula: filterToDateRangeEmail(startDate, endDate, email),
-      fields: ["email", "date", "checkedin", "checkedout"],
+      fields: ["email", "date", "checkedin", "checkedout", "hrsCompleted"],
       sort: [{ field: "date", direction: "asc" }],
     }).then((shifts) => {
-      setFilteredShifts(shifts.filter((s) => s.checkedin && s.checkedout));
+      const filtered = shifts.filter((s) => s.checkedin && s.checkedout);
+      setFilteredShifts(filtered);
+      calcTotalHours(filtered);
       setHasSearched(true);
       setIsLoading(false);
     });
   };
+
+  const calcTotalHours = (shifts: Shift[]) => {
+    let totalMinutes = 0
+    shifts.forEach(shift => {
+      totalMinutes += shift.hrsCompleted;
+    });
+    const formatHours = calcHours(totalMinutes);
+    setTotalHours(formatHours);
+  }
+
+  const calcHours = (minutes: number): string =>{
+    let hours = Math.floor(minutes/60);
+    let calMinutes = minutes % 60;
+    let totalHours = hours + " hrs " + calMinutes + " mins";
+    let onlyMins = calMinutes + " mins";
+    let onlyHours = hours + " hrs";
+    if (hours === 0) {
+      return onlyMins;
+    } else if (calMinutes === 0) {
+      return onlyHours;
+    } else {
+      return totalHours;
+    }
+  }
+
+  const formatAMPM = (date) => {
+    var hours = date.getHours();
+    var minutes = date.getMinutes();
+    var ampm = hours >= 12 ? 'pm' : 'am';
+    hours = hours % 12;
+    hours = hours ? hours : 12; // the hour '0' should be '12'
+    minutes = minutes < 10 ? '0'+minutes : minutes;
+    var strTime = hours + ':' + minutes + ' ' + ampm;
+    return strTime;
+  }
 
   const clearResults = () => {
     setFilteredShifts([]);
@@ -139,13 +178,17 @@ export default function Hours() {
                     <td>{email}</td>
                     <td>{date}</td>
                     {/* TODO: Format Times & calc hours */}
-                    <td>{checkedin}</td>
-                    <td>{checkedout}</td>
-                    <td>TODO - calculate</td>
+                    <td>{formatAMPM(new Date(checkedin))}</td>
+                    <td>{formatAMPM(new Date(checkedout))}</td>
+                    <td>{calcHours(hrsCompleted)}</td>
                   </tr>
                 )
               )}
             </tbody>
+            <tr>
+              <th>Total Hours Volunteered in these dates:</th>
+              <td>{totalHours}</td>
+            </tr>
           </Table>
         )}
       </Container>
