@@ -73,6 +73,20 @@ export default function Hours() {
     return strTime;
   }
 
+  const changeDateFormat = (inputDate) => {  // expects Y-m-d
+    var splitDate = inputDate.split('-');
+    if(splitDate.count == 0){
+        return null;
+    }
+
+    var year = splitDate[0];
+    var month = splitDate[1];
+    var day = splitDate[2]; 
+
+    return month + '/' + day + '/' + year;
+}
+
+
   const clearResults = () => {
     setFilteredShifts([]);
     setHasSearched(false);
@@ -176,7 +190,7 @@ export default function Hours() {
                 ({ email, date, checkedin, checkedout, hrsCompleted }, i) => (
                   <tr key={i}>
                     <td>{email}</td>
-                    <td>{date}</td>
+                    <td>{changeDateFormat(date)}</td>
                     {/* TODO: Format Times & calc hours */}
                     <td>{formatAMPM(new Date(checkedin))}</td>
                     <td>{formatAMPM(new Date(checkedout))}</td>
@@ -184,11 +198,14 @@ export default function Hours() {
                   </tr>
                 )
               )}
+              <tr className="totalHours">
+                <td>Total Hours Volunteered in these dates:</td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td>{totalHours}</td>
+              </tr>
             </tbody>
-            <tr>
-              <th>Total Hours Volunteered in these dates:</th>
-              <td>{totalHours}</td>
-            </tr>
           </Table>
         )}
       </Container>
