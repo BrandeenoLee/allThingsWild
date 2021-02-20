@@ -34,6 +34,19 @@ export default function Shifts() {
     });
   };
 
+  const changeDateFormat = (inputDate) => {  // expects Y-m-d
+    var splitDate = inputDate.split('-');
+    if(splitDate.count == 0){
+        return null;
+    }
+
+    var year = splitDate[0];
+    var month = splitDate[1];
+    var day = splitDate[2]; 
+
+    return month + '/' + day + '/' + year;
+}
+
   const clearResults = () => {
     setFilteredShifts([]);
     setStartDate(null);
@@ -136,7 +149,7 @@ export default function Shifts() {
               {filteredShifts.map(({ email, date, shift }, i) => (
                 <tr key={i}>
                   <td>{email}</td>
-                  <td>{date}</td>
+                  <td>{changeDateFormat(date)}</td>
                   <td>{getShiftText(shift)}</td>
                 </tr>
               ))}

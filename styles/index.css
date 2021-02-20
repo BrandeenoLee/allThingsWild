@@ -29,3 +29,8 @@ hr {
   background-color: #f7f8fa;
   margin-bottom: 1.5rem;
 }
+
+tr.totalHours {
+  font-weight: bold;
+  background-color: rgb(61,174,43, .25);
+}

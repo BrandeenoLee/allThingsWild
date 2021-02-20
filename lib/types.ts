@@ -12,4 +12,5 @@ export type Shift = {
     shift: 1 | 2 | 3 | 4;
     checkedin?: Date;
     checkedout?: Date;
+    hrsCompleted?: number;
 }
