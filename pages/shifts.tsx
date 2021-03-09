@@ -13,6 +13,10 @@ import { getShiftText, todayPlusDays } from "@/lib/utils";
 import Alert from "react-bootstrap/Alert";
 import { Shift } from "@/lib/types";
 import { start } from "repl";
+import { getDisplayName } from "next/dist/next-server/lib/utils";
+import { faEdit } from '@fortawesome/free-solid-svg-icons'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+
 
 export default function Shifts() {
   const [email, setEmail] = useState("");
@@ -26,8 +30,9 @@ export default function Shifts() {
     e.preventDefault();
     getData("shifts", {
       filterByFormula: filterToDateRangeEmail(startDate, endDate, email),
-      fields: ["email", "date", "shift"],
+      fields: ["date", "shift"],
     }).then((shifts: Shift[]) => {
+      console.log("shifts", shifts)
       setFilteredShifts(shifts);
       setHasSearched(true);
       setIsLoading(false);
@@ -140,15 +145,15 @@ export default function Shifts() {
           <Table striped bordered>
             <thead>
               <tr>
-                <th>Email</th>
+                <th>Edit</th>
                 <th>Date</th>
                 <th>Shift</th>
               </tr>
             </thead>
             <tbody>
-              {filteredShifts.map(({ email, date, shift }, i) => (
+              {filteredShifts.map(({ id, date, shift }, i) => (
                 <tr key={i}>
-                  <td>{email}</td>
+                  <td><i className="far fa-edit"></i></td>
                   <td>{changeDateFormat(date)}</td>
                   <td>{getShiftText(shift)}</td>
                 </tr>

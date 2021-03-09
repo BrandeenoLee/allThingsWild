@@ -8,6 +8,10 @@
     "migrate": "node scripts/migrate-db.js"
   },
   "dependencies": {
+    "@fortawesome/fontawesome-svg-core": "^1.2.34",
+    "@fortawesome/free-brands-svg-icons": "^5.15.2",
+    "@fortawesome/free-solid-svg-icons": "^5.15.2",
+    "@fortawesome/react-fontawesome": "^0.1.14",
     "airtable": "^0.10.1",
     "bad-words": "^3.0.4",
     "bootstrap": "^4.5.3",

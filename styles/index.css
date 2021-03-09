@@ -34,3 +34,8 @@ tr.totalHours {
   font-weight: bold;
   background-color: rgb(61,174,43, .25);
 }
+
+.clockLabel {
+  font-style: italic;
+  color: grey;
+}
