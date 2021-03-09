@@ -8,8 +8,13 @@ const base = new Airtable({
 const volunteersTable = base(process.env.NEXT_PUBLIC_AIRTABLE_TABLE_NAME_VOLUNTEERS);
 const shiftsTable = base(process.env.NEXT_PUBLIC_AIRTABLE_TABLE_NAME_SHIFTS);
 
-const getMinifiedData = data => {
-  return data.map(d => d.fields);
+const getIdWithFields = data => {
+  return data.map(d => {
+    return {
+      id: d.id,
+      ...d.fields
+    }
+  });
 };
 
 export default async function getData(table: 'volunteers' | 'shifts', options = {}) {
@@ -21,12 +26,12 @@ export default async function getData(table: 'volunteers' | 'shifts', options = 
 
 export const getVolunteers = async (options = {}) => {
   const volunteers = await volunteersTable.select(options).all();
-  return getMinifiedData(volunteers)
+  return getIdWithFields(volunteers)
 };
 
 const getShifts = async (options = {}) => {
   const shifts = await shiftsTable.select(options).all();
-  return getMinifiedData(shifts);
+  return getIdWithFields(shifts);
 };
 
 export const newVolunteer = (volunteer: Volunteer): Promise<void> => {
@@ -64,3 +69,29 @@ export const addShifts = (values: Shift[]): Promise<void> => {
     });
   });
 };
+
+export const clockInDB = (id: string) => {
+  base('Shifts').update(id, {
+    "checkedin": new Date(),
+  }, function(err, record) {
+    if (err) {
+      console.error("error", err);
+      return;
+    }
+    console.log("successful check in");
+  });
+  
+}
+
+export const clockOutDB = (id: string) => {
+  base('Shifts').update(id, {
+    "checkedout": new Date(),
+  }, function(err, record) {
+    if (err) {
+      console.error("error", err);
+      return;
+    }
+    console.log("successful check out");
+  });
+  
+}

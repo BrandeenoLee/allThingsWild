@@ -1,7 +1,7 @@
 import Container from "@/components/container";
 import BrandedNav from "@/components/brandedNav";
 import { filterToToday } from "@/lib/airtableFormulas";
-import getData, { getVolunteers } from "@/lib/getData";
+import getData, { clockInDB, clockOutDB, getVolunteers } from "@/lib/getData";
 import React, { useState, useEffect } from "react";
 import Alert from "react-bootstrap/Alert";
 import Button from "react-bootstrap/Button";
@@ -14,6 +14,7 @@ import {
 import { debug } from "console";
 import { Shift } from "@/lib/types";
 import VolunteerSignUpModal from "@/components/volunteerSignUpModal";
+import { checkServerIdentity } from "tls";
 
 export default function IndexPage() {
   const [loading, setLoading] = useState(false);
@@ -77,6 +78,34 @@ export default function IndexPage() {
       });
   };
 
+  const clockIn = (id: string) => {
+    console.log("clockIn", id);
+    clockInDB(id);
+
+    //    TO DO:  Update shifts only if succsseful
+    updateShifts(true, id);
+  };
+
+  const clockOut = (id: string) => {
+    clockOutDB(id);
+    updateShifts(false, id);
+    console.log("clockOut");
+  };
+
+  const updateShifts = (clockIn: boolean, id: string) => {
+    const updatedShifts = [...todaysShifts];
+    updatedShifts.forEach((shift) => {
+      console.log("shift", shift);
+      if (shift.id !== id) return;
+      if (clockIn) {
+        shift.checkedin = new Date();
+      } else {
+        shift.checkedout = new Date();
+      }
+    });
+      setTodaysShifts(updatedShifts);
+  };
+
   return (
     <div>
       <BrandedNav activePage="home" />
@@ -94,19 +123,29 @@ export default function IndexPage() {
               <tr>
                 <th>Volunteer</th>
                 <th>Shift</th>
-                <th>Check In/Out</th>
+                <th>Clock In/Out</th>
               </tr>
             </thead>
             <tbody>
               {todaysShifts.map(
-                ({ email, shift, checkedin, checkedout }, i) => (
+                ({ id, email, shift, checkedin, checkedout }, i) => (
                   <tr key={i}>
                     <td>{emailToNameMap && emailToNameMap[email]}</td>
                     <td>{getShiftText(shift)}</td>
                     <td>
-                      <Button variant="primary">
-                        {checkedin && !checkedout ? "Clock Out" : "Clock In"}
-                      </Button>{" "}
+                      {!checkedout && (
+                        <Button
+                          variant="primary"
+                          onClick={(evt) =>
+                            checkedin && !checkedout ? clockOut(id) : clockIn(id)
+                          }
+                        >
+                          {checkedin && !checkedout ? "Clock Out" : "Clock In"}
+                        </Button>)
+                      }
+                      {checkedout && (
+                        <div className="clockLabel" >Thanks for Volunteering!</div>
+                      )}
                     </td>
                   </tr>
                 )
