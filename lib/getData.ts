@@ -51,7 +51,7 @@ export const newVolunteer = (volunteer: Volunteer): Promise<void> => {
   
 };
 
-export const addShifts = (values: Shift[]): Promise<void> => {
+export const addShifts = (values: Shift[]): Promise<Shift[]> => {
   const createArr = values.map(shift => {
     return {
       "fields": shift
@@ -65,33 +65,39 @@ export const addShifts = (values: Shift[]): Promise<void> => {
         return;
       }
       console.log('resolving')
+      resolve(getIdWithFields(records));
+    });
+  });
+};
+
+export const clockInDB = (id: string): Promise<void> => {
+  return new Promise((resolve, reject) => {
+    base('Shifts').update(id, {
+      "checkedin": new Date(),
+    }, function(err, record) {
+      if (err) {
+        reject();
+        return;
+      }
       resolve();
     });
   });
 };
 
-export const clockInDB = (id: string) => {
-  base('Shifts').update(id, {
-    "checkedin": new Date(),
-  }, function(err, record) {
-    if (err) {
-      console.error("error", err);
-      return;
-    }
-    console.log("successful check in");
+export const clockOutDB = (id: string): Promise<void> => {
+  return new Promise((resolve, reject) => {
+    base('Shifts').update(id, {
+      "checkedout": new Date(),
+    }, function(err, record) {
+      if (err) {
+        reject()
+        return;
+      }
+      resolve();
+    });
   });
-  
 }
 
-export const clockOutDB = (id: string) => {
-  base('Shifts').update(id, {
-    "checkedout": new Date(),
-  }, function(err, record) {
-    if (err) {
-      console.error("error", err);
-      return;
-    }
-    console.log("successful check out");
-  });
-  
+export const editShift = (id: string, updatedShift: Shift) => {
+
 }

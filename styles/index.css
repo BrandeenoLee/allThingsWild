@@ -35,7 +35,7 @@ tr.totalHours {
   background-color: rgb(61,174,43, .25);
 }
 
-.clockLabel {
+.italic {
   font-style: italic;
   color: grey;
 }

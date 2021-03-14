@@ -1,7 +1,12 @@
 import Container from "@/components/container";
 import BrandedNav from "@/components/brandedNav";
-import { filterToToday } from "@/lib/airtableFormulas";
-import getData, { clockInDB, clockOutDB, getVolunteers } from "@/lib/getData";
+import { filterToDate, filterToToday } from "@/lib/airtableFormulas";
+import getData, {
+  addShifts,
+  clockInDB,
+  clockOutDB,
+  getVolunteers,
+} from "@/lib/getData";
 import React, { useState, useEffect } from "react";
 import Alert from "react-bootstrap/Alert";
 import Button from "react-bootstrap/Button";
@@ -11,10 +16,9 @@ import {
   getShiftText,
   getVolunteerNameMap,
 } from "@/lib/utils";
-import { debug } from "console";
-import { Shift } from "@/lib/types";
+import { Shift, Volunteer } from "@/lib/types";
 import VolunteerSignUpModal from "@/components/volunteerSignUpModal";
-import { checkServerIdentity } from "tls";
+import toast from "react-hot-toast";
 
 export default function IndexPage() {
   const [loading, setLoading] = useState(false);
@@ -28,7 +32,7 @@ export default function IndexPage() {
   useEffect(() => {
     setLoading(true);
     getData("shifts", {
-      filterByFormula: filterToToday(),
+      filterByFormula: filterToDate(new Date()),
       fields: ["email", "shift", "checkedin", "checkedout"],
       sort: [{ field: "shift", direction: "asc" }],
     })
@@ -58,44 +62,65 @@ export default function IndexPage() {
     return 4;
   };
 
-  const submitTodaySignupForm = (e) => {
+  const submitTodaySignupForm = async (e) => {
     e.preventDefault();
-    const volunteers = getVolunteers()
-      .then((volunteers) => {
-        return volunteers.map((v) => v.email).indexOf(email) > -1;
+    const volunteers = await getVolunteers();
+    const volunteer: Volunteer = volunteers.find((v) => v.email === email);
+    if (!volunteer) {
+      setShowVolunteerSignUp(true);
+      return;
+    }
+
+    const shiftInfo = {
+      email,
+      shift: calculateShiftTime(),
+      date: new Date(),
+      checkedin: new Date(),
+    };
+    addShifts([shiftInfo])
+      .then((updatedShifts) => {
+        const updatedShift = updatedShifts[0];
+        setTodaysShifts([...todaysShifts, updatedShift]);
+        setEmailToNameMap({ ...emailToNameMap, [email]: volunteer.name });
+        toast.success("Signed up and clocked in!", {
+          duration: 5000,
+          icon: "🦝",
+        });
       })
-      .then((isRegistered) => {
-        if (isRegistered) {
-          const shiftInfo = {
-            email,
-            shift: calculateShiftTime(),
-            date: new Date().toLocaleDateString("en-US"),
-          };
-          addShiftsWithToast([shiftInfo]);
-          return;
-        }
-        setShowVolunteerSignUp(true);
+      .catch(() => {
+        toast.error("Sorry, something went wrong", {
+          duration: 5000,
+          icon: "🙈",
+        });
       });
   };
 
   const clockIn = (id: string) => {
     console.log("clockIn", id);
-    clockInDB(id);
-
-    //    TO DO:  Update shifts only if succsseful
-    updateShifts(true, id);
+    clockInDB(id)
+      .then(() => {
+        toast.success("Successfully clocked in");
+        updateShifts(true, id);
+      })
+      .catch(() => {
+        toast.error("Oops, something went wrong. Please try again");
+      });
   };
 
   const clockOut = (id: string) => {
-    clockOutDB(id);
-    updateShifts(false, id);
-    console.log("clockOut");
+    clockOutDB(id)
+      .then(() => {
+        toast.success("Successfully clocked out, thank you!");
+        updateShifts(false, id);
+      })
+      .catch(() => {
+        toast.error("Oops, something went wrong. Please try again");
+      });
   };
 
   const updateShifts = (clockIn: boolean, id: string) => {
     const updatedShifts = [...todaysShifts];
     updatedShifts.forEach((shift) => {
-      console.log("shift", shift);
       if (shift.id !== id) return;
       if (clockIn) {
         shift.checkedin = new Date();
@@ -103,7 +128,7 @@ export default function IndexPage() {
         shift.checkedout = new Date();
       }
     });
-      setTodaysShifts(updatedShifts);
+    setTodaysShifts(updatedShifts);
   };
 
   return (
@@ -115,7 +140,14 @@ export default function IndexPage() {
         </h2>
         {loading && <p>Loading...</p>}
         {!loading && todaysShifts.length === 0 && (
-          <Alert variant={"dark"}>No volunteers scheduled today</Alert>
+          <div style={{ textAlign: "center" }}>
+            <img
+              src="sad-raccoon.svg"
+              alt="No volunteers raccoon"
+              style={{ width: 200 }}
+            />
+            <p className="italic">No volunteers scheduled today</p>
+          </div>
         )}
         {!loading && todaysShifts.length > 0 && (
           <Table striped bordered>
@@ -137,14 +169,17 @@ export default function IndexPage() {
                         <Button
                           variant="primary"
                           onClick={(evt) =>
-                            checkedin && !checkedout ? clockOut(id) : clockIn(id)
+                            checkedin && !checkedout
+                              ? clockOut(id)
+                              : clockIn(id)
                           }
                         >
                           {checkedin && !checkedout ? "Clock Out" : "Clock In"}
-                        </Button>)
-                      }
+                          {checkedout}
+                        </Button>
+                      )}
                       {checkedout && (
-                        <div className="clockLabel" >Thanks for Volunteering!</div>
+                        <div className="italic">Thanks for Volunteering!</div>
                       )}
                     </td>
                   </tr>
@@ -169,7 +204,7 @@ export default function IndexPage() {
                 placeholder="Email"
                 required
                 value={email}
-                onChange={(e) => setEmail(e.target.value)}
+                onChange={(e) => setEmail(e.target.value.toLowerCase())}
               />
             </Col>
             <Col sm={4}>

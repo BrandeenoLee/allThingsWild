@@ -38,7 +38,7 @@ export default function ShiftSignUpForm() {
     const shiftInfo = {
       email,
       shift: selectedShift,
-      date: new Date(date).toLocaleDateString("en-US"),
+      date: new Date(date),
     };
 
     addShiftsWithToast([shiftInfo]);
@@ -90,7 +90,7 @@ export default function ShiftSignUpForm() {
         shiftsToAdd.push({
           email,
           shift: selectedShift,
-          date: currentDate.toLocaleDateString("en-US"),
+          date: currentDate,
         });
         currentDate = addDays(currentDate, 7);
       }
@@ -112,7 +112,7 @@ export default function ShiftSignUpForm() {
               placeholder="Email"
               required
               value={email}
-              onChange={(e) => setEmail(e.target.value)}
+              onChange={(e) => setEmail(e.target.value.toLowerCase())}
             />
           </Col>
         </Form.Group>

@@ -14,9 +14,8 @@ import Alert from "react-bootstrap/Alert";
 import { Shift } from "@/lib/types";
 import { start } from "repl";
 import { getDisplayName } from "next/dist/next-server/lib/utils";
-import { faEdit } from '@fortawesome/free-solid-svg-icons'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-
+import { faEdit } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 export default function Shifts() {
   const [email, setEmail] = useState("");
@@ -32,25 +31,12 @@ export default function Shifts() {
       filterByFormula: filterToDateRangeEmail(startDate, endDate, email),
       fields: ["date", "shift"],
     }).then((shifts: Shift[]) => {
-      console.log("shifts", shifts)
+      console.log("shifts", shifts);
       setFilteredShifts(shifts);
       setHasSearched(true);
       setIsLoading(false);
     });
   };
-
-  const changeDateFormat = (inputDate) => {  // expects Y-m-d
-    var splitDate = inputDate.split('-');
-    if(splitDate.count == 0){
-        return null;
-    }
-
-    var year = splitDate[0];
-    var month = splitDate[1];
-    var day = splitDate[2]; 
-
-    return month + '/' + day + '/' + year;
-}
 
   const clearResults = () => {
     setFilteredShifts([]);
@@ -90,7 +76,7 @@ export default function Shifts() {
                 <DatePicker
                   required
                   selected={startDate}
-                  onChange={(date) => setStartDate(date)}
+                  onChange={(date: Date) => setStartDate(date)}
                   selectsStart
                   startDate={startDate}
                   endDate={endDate}
@@ -153,8 +139,17 @@ export default function Shifts() {
             <tbody>
               {filteredShifts.map(({ id, date, shift }, i) => (
                 <tr key={i}>
-                  <td><i className="far fa-edit"></i></td>
-                  <td>{changeDateFormat(date)}</td>
+                  <td>
+                    <i className="far fa-edit"></i>
+                  </td>
+                  <td>
+                    {new Date(date).toLocaleDateString("en-US", {
+                      weekday: "short",
+                      year: "numeric",
+                      month: "long",
+                      day: "numeric",
+                    })}
+                  </td>
                   <td>{getShiftText(shift)}</td>
                 </tr>
               ))}

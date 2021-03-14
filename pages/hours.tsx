@@ -39,16 +39,16 @@ export default function Hours() {
   };
 
   const calcTotalHours = (shifts: Shift[]) => {
-    let totalMinutes = 0
-    shifts.forEach(shift => {
+    let totalMinutes = 0;
+    shifts.forEach((shift) => {
       totalMinutes += shift.hrsCompleted;
     });
     const formatHours = calcHours(totalMinutes);
     setTotalHours(formatHours);
-  }
+  };
 
-  const calcHours = (minutes: number): string =>{
-    let hours = Math.floor(minutes/60);
+  const calcHours = (minutes: number): string => {
+    let hours = Math.floor(minutes / 60);
     let calMinutes = minutes % 60;
     let totalHours = hours + " hrs " + calMinutes + " mins";
     let onlyMins = calMinutes + " mins";
@@ -60,32 +60,18 @@ export default function Hours() {
     } else {
       return totalHours;
     }
-  }
+  };
 
   const formatAMPM = (date) => {
     var hours = date.getHours();
     var minutes = date.getMinutes();
-    var ampm = hours >= 12 ? 'pm' : 'am';
+    var ampm = hours >= 12 ? "pm" : "am";
     hours = hours % 12;
     hours = hours ? hours : 12; // the hour '0' should be '12'
-    minutes = minutes < 10 ? '0'+minutes : minutes;
-    var strTime = hours + ':' + minutes + ' ' + ampm;
+    minutes = minutes < 10 ? "0" + minutes : minutes;
+    var strTime = hours + ":" + minutes + " " + ampm;
     return strTime;
-  }
-
-  const changeDateFormat = (inputDate) => {  // expects Y-m-d
-    var splitDate = inputDate.split('-');
-    if(splitDate.count == 0){
-        return null;
-    }
-
-    var year = splitDate[0];
-    var month = splitDate[1];
-    var day = splitDate[2]; 
-
-    return month + '/' + day + '/' + year;
-}
-
+  };
 
   const clearResults = () => {
     setFilteredShifts([]);
@@ -178,7 +164,6 @@ export default function Hours() {
           <Table striped bordered>
             <thead>
               <tr>
-                <th>Email</th>
                 <th>Date</th>
                 <th>Clocked In</th>
                 <th>Clocked Out</th>
@@ -187,10 +172,15 @@ export default function Hours() {
             </thead>
             <tbody>
               {filteredShifts.map(
-                ({ email, date, checkedin, checkedout, hrsCompleted }, i) => (
+                ({ date, checkedin, checkedout, hrsCompleted }, i) => (
                   <tr key={i}>
-                    <td>{email}</td>
-                    <td>{changeDateFormat(date)}</td>
+                    <td>
+                      {new Date(date).toLocaleDateString("en-US", {
+                        year: "numeric",
+                        month: "numeric",
+                        day: "numeric",
+                      })}
+                    </td>
                     {/* TODO: Format Times & calc hours */}
                     <td>{formatAMPM(new Date(checkedin))}</td>
                     <td>{formatAMPM(new Date(checkedout))}</td>
@@ -200,7 +190,6 @@ export default function Hours() {
               )}
               <tr className="totalHours">
                 <td>Total Hours Volunteered in these dates:</td>
-                <td></td>
                 <td></td>
                 <td></td>
                 <td>{totalHours}</td>
